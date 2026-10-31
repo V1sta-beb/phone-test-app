@@ -1,7 +1,10 @@
 package com.vista.phonetest.tests;
 
 import android.app.ActivityManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -110,7 +113,35 @@ public class InfoTest extends BaseTest {
         sb.append(sm.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null ? "гироскоп ✓" : "гироскоп ✕");
         v[11].setText(sb.toString());
 
+        body.addView(U.text(a, "Быстрые переходы (IMEI и здоровье батареи Android приложениям не отдаёт):", 14, U.FG, true));
+        body.addView(U.row(a,
+                U.primary(a, "IMEI", x -> open(
+                        new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS),
+                        new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode("*#06#"))))),
+                U.button(a, "Набрать *#06#", x -> open(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode("*#06#")))))));
+        body.addView(U.row(a,
+                U.primary(a, "Батарея", x -> open(
+                        new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS),
+                        new Intent(Intent.ACTION_POWER_USAGE_SUMMARY))),
+                U.button(a, "Samsung Members", x -> {
+                    Intent m = a.getPackageManager().getLaunchIntentForPackage("com.samsung.android.voc");
+                    if (m != null) open(m);
+                    else a.toast("Samsung Members не установлен");
+                })));
+        body.addView(U.text(a, "«IMEI» и «Батарея» открывают Настройки → Про телефон: IMEI видно сразу, здоровье — в пункте «Відомості про батарею» (One UI 6.1 и новее). Если через *#06# IMEI не появился, сотрите последний # и наберите его заново. В Samsung Members: Підтримка → Діагностика телефону → Стан батареї.", 13, U.MUTED, false));
+
         body.addView(U.text(a, "Циклы заряда: до 300 — отлично, 300–600 — нормально, больше 800 — аккумулятор заметно изношен. Здоровье в процентах смотрите в Настройки → Про телефон → Відомості про батарею.", 13, U.MUTED, false));
+    }
+
+    private void open(Intent... intents) {
+        for (Intent i : intents) {
+            try {
+                a.startActivity(i);
+                return;
+            } catch (ActivityNotFoundException | SecurityException ignored) {
+            }
+        }
+        a.toast("Не удалось открыть");
     }
 
     private static int roundRam(double gb) {
