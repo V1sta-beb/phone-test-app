@@ -120,17 +120,17 @@ public class InfoTest extends BaseTest {
                         new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode("*#06#"))))),
                 U.button(a, "Набрать *#06#", x -> open(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode("*#06#")))))));
         body.addView(U.row(a,
-                U.primary(a, "Батарея", x -> open(
-                        new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS),
-                        new Intent(Intent.ACTION_POWER_USAGE_SUMMARY))),
+                U.primary(a, "Использование батареи", x -> open(
+                        new Intent(Intent.ACTION_POWER_USAGE_SUMMARY),
+                        new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS))),
                 U.button(a, "Samsung Members", x -> {
                     Intent m = a.getPackageManager().getLaunchIntentForPackage("com.samsung.android.voc");
                     if (m != null) open(m);
                     else a.toast("Samsung Members не установлен");
                 })));
-        body.addView(U.text(a, "«IMEI» и «Батарея» открывают Настройки → Про телефон: IMEI видно сразу, здоровье — в пункте «Відомості про батарею» (One UI 6.1 и новее). Если через *#06# IMEI не появился, сотрите последний # и наберите его заново. В Samsung Members: Підтримка → Діагностика телефону → Стан батареї.", 13, U.MUTED, false));
+        body.addView(U.text(a, "«IMEI» открывает Настройки → Про телефон, IMEI видно сразу. Если через *#06# IMEI не появился, сотрите последний # и наберите его заново. «Відомості про батарею» в настройках на большинстве прошивок показывает только заводскую ёмкость, а не износ. Реальное состояние: Samsung Members → Підтримка → Діагностика телефону → Стан батареї («Нормальний» или «Слабкий»), плюс число циклов в строке выше.", 13, U.MUTED, false));
 
-        body.addView(U.text(a, "Циклы заряда: до 300 — отлично, 300–600 — нормально, больше 800 — аккумулятор заметно изношен. Здоровье в процентах смотрите в Настройки → Про телефон → Відомості про батарею.", 13, U.MUTED, false));
+        body.addView(U.text(a, "Циклы заряда: до 300 — отлично, 300–600 — нормально, больше 800 — аккумулятор заметно изношен. Здоровье смотрите в Samsung Members (кнопка ниже).", 13, U.MUTED, false));
     }
 
     private void open(Intent... intents) {
